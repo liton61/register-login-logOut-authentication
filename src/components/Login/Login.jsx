@@ -1,18 +1,32 @@
 import React, { useContext } from 'react';
 import { AuthContext } from '../Provider/AuthProvider';
+import useAuth from '../Hooks/useAuth';
 
 const Login = () => {
-    const {googleLogin} = useContext(AuthContext);
-    const handleWithBtn  = (media) =>{
-        media()
-        .then(res => console.log(res))
-        .error(error => console.log(error))
+    const { signIn } = useAuth();
+    const handleSignIn = (e) => {
+        e.preventDefault();
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+        console.log(email, password);
+
+        signIn(email, password)
+            .then(res => console.log(res.user))
+            .catch(error => console.log(error))
     }
+
+    const { googleLogin } = useContext(AuthContext);
+    const handleWithGoogle = (media) => {
+        media()
+            .then(res => console.log(res))
+            .error(error => console.log(error))
+    }
+
     return (
         <div className="bg-gray-100 flex items-center justify-center h-screen">
             <div className="bg-white w-96 p-8 rounded-lg shadow-lg">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">Login</h2>
-                <form>
+                <form onSubmit={handleSignIn}>
                     <div className="mb-4">
                         <label className="block text-gray-600 text-sm font-medium mb-2">Email</label>
                         <input type="email" id="email" name="email" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" placeholder="Enter your email" required />
@@ -27,7 +41,7 @@ const Login = () => {
                 </form>
                 <p className="text-gray-600 text-sm text-center">Don't have an account? <a href="/register" className="text-blue-500">Register</a></p>
                 <div className="my-6">
-                    <button onClick={() =>handleWithBtn(googleLogin)} type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Google</button>
+                    <button onClick={() => handleWithGoogle(googleLogin)} type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Google</button>
                 </div>
             </div>
         </div>
